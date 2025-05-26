@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Soenneker.AdaptiveCard.Util.Abstract;
 using Soenneker.Enums.JsonLibrary;
 using Soenneker.Tests.FixturedUnit;
