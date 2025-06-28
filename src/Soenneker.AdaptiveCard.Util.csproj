@@ -46,7 +46,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="3.0.703" />
         <PackageReference Include="Soenneker.Extensions.DateTime" Version="3.0.1679" />
-        <PackageReference Include="Soenneker.Utils.Environment" Version="3.0.503" />
+        <PackageReference Include="Soenneker.Utils.Environment" Version="3.0.505" />
         <PackageReference Include="Soenneker.Utils.TimeZones" Version="3.0.741" />
     </ItemGroup>
 </Project>
