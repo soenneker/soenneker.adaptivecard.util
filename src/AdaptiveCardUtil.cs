@@ -14,7 +14,7 @@ using Soenneker.Utils.TimeZones;
 namespace Soenneker.AdaptiveCard.Util;
 
 ///<inheritdoc cref="IAdaptiveCardUtil"/>
-public class AdaptiveCardUtil : IAdaptiveCardUtil
+public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 {
     private readonly ILogger<AdaptiveCardUtil> _logger;
     private readonly IConfiguration _config;
