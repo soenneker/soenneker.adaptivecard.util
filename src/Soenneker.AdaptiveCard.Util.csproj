@@ -46,6 +46,6 @@
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.733" />
         <PackageReference Include="Soenneker.Extensions.DateTime" Version="4.0.1697" />
         <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.530" />
-        <PackageReference Include="Soenneker.Utils.TimeZones" Version="4.0.746" />
+        <PackageReference Include="Soenneker.Utils.TimeZones" Version="4.0.747" />
     </ItemGroup>
 </Project>
