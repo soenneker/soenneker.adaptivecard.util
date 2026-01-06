@@ -6,7 +6,7 @@ using AdaptiveCards;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Soenneker.AdaptiveCard.Util.Abstract;
-using Soenneker.Extensions.DateTime;
+using Soenneker.Extensions.DateTimeOffsets;
 using Soenneker.Extensions.String;
 using Soenneker.Utils.Environment;
 using Soenneker.Utils.TimeZones;
@@ -181,7 +181,7 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
             _logger.LogError(ex, "Error retrieving machine name");
         }
 
-        string timestamp = DateTime.UtcNow.ToTzDateTimeFormat(Tz.Eastern);
+        string timestamp = DateTimeOffset.UtcNow.ToTzDateTimeFormat(Tz.Eastern);
         AddFooterText(card, timestamp);
     }
 
