@@ -6,6 +6,7 @@ using AdaptiveCards;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Soenneker.AdaptiveCard.Util.Abstract;
+using Soenneker.AdaptiveCard.Util.Utils;
 using Soenneker.Extensions.DateTimeOffsets;
 using Soenneker.Extensions.String;
 using Soenneker.Utils.Environment;
@@ -13,17 +14,29 @@ using Soenneker.Utils.TimeZones;
 
 namespace Soenneker.AdaptiveCard.Util;
 
-///<inheritdoc cref="IAdaptiveCardUtil"/>
+/// <inheritdoc cref="IAdaptiveCardUtil"/>
 public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 {
     private readonly ILogger<AdaptiveCardUtil> _logger;
-    private readonly IConfiguration _config;
+
+    // Cache these; reading config repeatedly is extra work and can allocate depending on providers.
+    private readonly string? _environment;
+    private readonly string? _projectName;
+
     private const int _maxErrorBytes = 27 * 1024;
+    private const int _truncateChars = 5000;
+
+    // Static UTF8 instance (Encoding.UTF8 property is already cached, but keep local reference).
+    private static readonly Encoding _utf8 = Encoding.UTF8;
+
+    // Avoid per-card anonymous object allocation; keep same JSON shape ("width": "Full").
+    private static readonly MsTeamsCardProps _msTeamsProps = new();
 
     public AdaptiveCardUtil(ILogger<AdaptiveCardUtil> logger, IConfiguration config)
     {
         _logger = logger;
-        _config = config;
+        _environment = config.GetValue<string>("Environment");
+        _projectName = config.GetValue<string>("ProjectName");
     }
 
     public AdaptiveCards.AdaptiveCard Build(string title, string? summary = null, Dictionary<string, string?>? facts = null, Exception? exception = null,
@@ -33,7 +46,11 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 
         AddHeader(card, title, summary);
         AddFacts(card, facts);
-        AddTextBlock(card, exception?.ToString());
+
+        // exception.ToString() can be big; we only materialize if exception exists.
+        if (exception is not null)
+            AddTextBlock(card, exception.ToString());
+
         AddTextBlock(card, additionalBody);
         AddFooter(card);
 
@@ -46,22 +63,27 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 
         if (items.Count > 0)
         {
-            PropertyInfo[] properties = typeof(T).GetProperties();
-            AddTableHeader(card, title, summary, properties);
+            TableMeta<T> meta = TableCache<T>.Meta;
+            AddTableHeader(card, title, summary, meta.Properties);
 
-            foreach (T item in items)
+            // Prefer for-loop over foreach to avoid enumerator overhead (small, but free).
+            for (int i = 0; i < items.Count; i++)
             {
+                T item = items[i];
                 var row = new AdaptiveColumnSet();
 
-                foreach (PropertyInfo prop in properties)
+                Func<T, object?>[] getters = meta.Getters;
+
+                for (int p = 0; p < getters.Length; p++)
                 {
-                    string value = prop.GetValue(item)?.ToString() ?? string.Empty;
+                    object? raw = getters[p](item);
+                    string value = raw?.ToString() ?? string.Empty;
 
                     row.Columns.Add(new AdaptiveColumn
                     {
                         Items =
                         [
-                            new AdaptiveTextBlock(value) {Wrap = true}
+                            new AdaptiveTextBlock(value) { Wrap = true }
                         ]
                     });
                 }
@@ -78,7 +100,7 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
     {
         AdditionalProperties =
         {
-            ["msteams"] = new {width = "Full"}
+            ["msteams"] = _msTeamsProps
         }
     };
 
@@ -105,15 +127,17 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 
     private static void AddFacts(AdaptiveCards.AdaptiveCard card, Dictionary<string, string?>? facts)
     {
-        if (facts == null || facts.Count < 1)
+        if (facts is null || facts.Count == 0)
             return;
 
         var factSet = new AdaptiveFactSet();
 
-        foreach ((string key, string? value) in facts)
+        foreach (KeyValuePair<string, string?> kvp in facts)
         {
+            string? value = kvp.Value;
+
             if (!value.IsNullOrEmpty())
-                factSet.Facts.Add(new AdaptiveFact(key, value));
+                factSet.Facts.Add(new AdaptiveFact(kvp.Key, value));
         }
 
         card.Body.Add(factSet);
@@ -124,11 +148,31 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
         if (content.IsNullOrEmpty())
             return;
 
-        int textBytes = Encoding.UTF8.GetByteCount(content);
-        if (textBytes > _maxErrorBytes)
+        // Fast paths to avoid GetByteCount() in the common case.
+        // Worst-case UTF-8 is 4 bytes per char. If we're under maxBytes/4, we are definitely safe.
+        int len = content.Length;
+        if (len > (_maxErrorBytes / 4))
         {
-            _logger.LogError("Truncating large text block for MS Teams. Size: {Size} bytes", textBytes);
-            content = content[..Math.Min(5000, content.Length)];
+            // If length alone already exceeds max bytes, it must be too big (UTF8 bytes >= chars).
+            bool tooBig = len > _maxErrorBytes;
+
+            // Otherwise compute exact bytes only when we have to.
+            if (!tooBig)
+            {
+                int textBytes = _utf8.GetByteCount(content);
+                tooBig = textBytes > _maxErrorBytes;
+
+                if (tooBig)
+                    _logger.LogError("Truncating large text block for MS Teams. Size: {Size} bytes", textBytes);
+            }
+            else
+            {
+                // We know it's too big without counting bytes; still log something useful.
+                _logger.LogError("Truncating large text block for MS Teams. Content length: {Length} chars", len);
+            }
+
+            if (tooBig)
+                content = content[..Math.Min(_truncateChars, len)];
         }
 
         card.Body.Add(new AdaptiveTextBlock
@@ -143,10 +187,12 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
     {
         AddHeader(card, title, summary);
 
-        var headerRow = new AdaptiveColumnSet {Spacing = AdaptiveSpacing.ExtraLarge};
+        var headerRow = new AdaptiveColumnSet { Spacing = AdaptiveSpacing.ExtraLarge };
 
-        foreach (PropertyInfo prop in properties)
+        for (int i = 0; i < properties.Length; i++)
         {
+            PropertyInfo prop = properties[i];
+
             headerRow.Columns.Add(new AdaptiveColumn
             {
                 Items =
@@ -165,11 +211,8 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
 
     private void AddFooter(AdaptiveCards.AdaptiveCard card)
     {
-        var environment = _config.GetValue<string>("Environment");
-        var projectName = _config.GetValue<string>("ProjectName");
-
-        AddFooterText(card, environment);
-        AddFooterText(card, projectName);
+        AddFooterText(card, _environment);
+        AddFooterText(card, _projectName);
 
         try
         {
