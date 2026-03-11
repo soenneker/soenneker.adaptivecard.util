@@ -44,7 +44,7 @@
         <PackageReference Include="AdaptiveCards" Version="3.1.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.4" />
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.797" />
-        <PackageReference Include="Soenneker.Extensions.DateTimeOffsets" Version="4.0.53" />
+        <PackageReference Include="Soenneker.Extensions.DateTimeOffsets" Version="4.0.55" />
         <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.616" />
         <PackageReference Include="Soenneker.Utils.TimeZones" Version="4.0.755" />
     </ItemGroup>
