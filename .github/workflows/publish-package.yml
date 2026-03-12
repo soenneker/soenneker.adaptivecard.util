@@ -55,16 +55,16 @@ jobs:
         run: dotnet build test/Soenneker.AdaptiveCard.Util.Tests/Soenneker.AdaptiveCard.Util.Tests.csproj --configuration Release --no-restore --verbosity minimal
 
       - name: Test
-        run: dotnet test test/Soenneker.AdaptiveCard.Util.Tests/Soenneker.AdaptiveCard.Util.Tests.csproj --no-restore --configuration Release --no-build --verbosity normal
+        run: dotnet test test/Soenneker.AdaptiveCard.Util.Tests/Soenneker.AdaptiveCard.Util.Tests.csproj --configuration Release --no-build --no-restore --verbosity normal
 
       - name: Pack
         shell: bash
         run: |
           mkdir -p artifacts
           dotnet pack src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj \
+            --configuration Release \
             --no-build \
             --no-restore \
-            --configuration Release \
             --output ./artifacts
 
       - name: Publish to NuGet with retry
