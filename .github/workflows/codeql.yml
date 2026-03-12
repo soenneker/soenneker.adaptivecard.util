@@ -42,7 +42,7 @@ jobs:
           build-mode: manual
 
       - name: Restore src
-        run: dotnet restore ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util
+        run: dotnet restore ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj
 
       - name: Build src
         run: dotnet build ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj --configuration Release --no-restore
