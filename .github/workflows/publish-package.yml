@@ -65,8 +65,7 @@ jobs:
             --no-build \
             --no-restore \
             --configuration Release \
-            --output ./artifacts \
-            -p:PackageReleaseNotes="${{ env.PACKAGE_RELEASE_NOTES }}"
+            --output ./artifacts
 
       - name: Publish to NuGet with retry
         shell: bash
