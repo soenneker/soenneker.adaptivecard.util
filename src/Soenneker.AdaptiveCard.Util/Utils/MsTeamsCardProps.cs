@@ -1,4 +1,4 @@
-﻿namespace Soenneker.AdaptiveCard.Util.Utils;
+namespace Soenneker.AdaptiveCard.Util.Utils;
 
 internal sealed class MsTeamsCardProps
 {
