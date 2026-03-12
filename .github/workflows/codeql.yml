@@ -42,10 +42,10 @@ jobs:
           build-mode: manual
 
       - name: Restore src
-        run: dotnet restore ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj
+        run: dotnet restore ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj --verbosity minimal
 
       - name: Build src
-        run: dotnet build ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj --configuration Release --no-restore
+        run: dotnet build ./src/Soenneker.AdaptiveCard.Util/Soenneker.AdaptiveCard.Util.csproj --configuration Release --no-restore --verbosity minimal
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
