@@ -1,29 +1,28 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using Soenneker.AdaptiveCard.Util.Abstract;
 using Soenneker.Enums.JsonLibrary;
-using Soenneker.Tests.FixturedUnit;
+using Soenneker.Tests.HostedUnit;
 using Soenneker.Utils.Json;
-using Xunit;
 
 namespace Soenneker.AdaptiveCard.Util.Tests;
 
-[Collection("Collection")]
-public class AdaptiveCardUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class AdaptiveCardUtilTests : HostedUnitTest
 {
     private readonly IAdaptiveCardUtil _util;
 
-    public AdaptiveCardUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public AdaptiveCardUtilTests(Host host) : base(host)
     {
         _util = Resolve<IAdaptiveCardUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
     }
 
-    [Fact]
+    [Test]
     public void AdaptiveCard_should_serialize_and_deserialize_with_newtonsoft()
     {
         AdaptiveCards.AdaptiveCard adaptiveCard = _util.Build(Faker.Commerce.ProductName());
