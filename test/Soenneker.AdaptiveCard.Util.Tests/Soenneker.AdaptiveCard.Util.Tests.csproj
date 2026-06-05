@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2538" />
+        <PackageReference Include="Soenneker.Utils.Json" Version="4.0.2541" />
         <PackageReference Include="Soenneker.Utils.Test" Version="4.0.318" />
         <PackageReference Include="Soenneker.Tests.HostedUnit" Version="4.0.61" />
         <PackageReference Include="TUnit" Version="1.49.0" />
