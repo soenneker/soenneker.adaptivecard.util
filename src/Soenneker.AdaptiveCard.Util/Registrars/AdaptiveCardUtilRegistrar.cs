@@ -12,6 +12,8 @@ public static class AdaptiveCardUtilRegistrar
     /// <summary>
     /// Adds <see cref="IAdaptiveCardUtil"/> as a singleton service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddAdaptiveCardUtilAsSingleton(this IServiceCollection services)
     {
         services.TryAddSingleton<IAdaptiveCardUtil, AdaptiveCardUtil>();
@@ -22,6 +24,8 @@ public static class AdaptiveCardUtilRegistrar
     /// <summary>
     /// Adds <see cref="IAdaptiveCardUtil"/> as a scoped service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddAdaptiveCardUtilAsScoped(this IServiceCollection services)
     {
         services.TryAddScoped<IAdaptiveCardUtil, AdaptiveCardUtil>();
