@@ -1,8 +1,6 @@
 using AwesomeAssertions;
 using Soenneker.AdaptiveCard.Util.Abstract;
-using Soenneker.Enums.JsonLibrary;
 using Soenneker.Tests.HostedUnit;
-using Soenneker.Utils.Json;
 
 namespace Soenneker.AdaptiveCard.Util.Tests;
 
@@ -27,9 +25,9 @@ public class AdaptiveCardUtilTests : HostedUnitTest
     {
         AdaptiveCards.AdaptiveCard adaptiveCard = _util.Build(Faker.Commerce.ProductName());
 
-        string serialized = JsonUtil.Serialize(adaptiveCard, libraryType: JsonLibraryType.Newtonsoft)!;
+        string serialized = adaptiveCard.ToJson();
 
-        var result = JsonUtil.Deserialize<AdaptiveCards.AdaptiveCard>(serialized, JsonLibraryType.Newtonsoft);
+        AdaptiveCards.AdaptiveCard result = AdaptiveCards.AdaptiveCard.FromJson(serialized).Card;
 
         result.Should().NotBeNull();
     }
