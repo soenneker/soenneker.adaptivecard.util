@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 
@@ -27,5 +28,5 @@ public interface IAdaptiveCardUtil
     /// <param name="items">The list of items to render as rows in the card.</param>
     /// <param name="summary">An optional summary or subtitle to include.</param>
     /// <returns>A fully constructed <see cref="AdaptiveCard"/> representing a table.</returns>
-    AdaptiveCards.AdaptiveCard BuildTable<T>(string title, List<T> items, string? summary = null);
+    AdaptiveCards.AdaptiveCard BuildTable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string title, List<T> items, string? summary = null);
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -57,7 +58,7 @@ public sealed class AdaptiveCardUtil : IAdaptiveCardUtil
         return card;
     }
 
-    public AdaptiveCards.AdaptiveCard BuildTable<T>(string title, List<T> items, string? summary = null)
+    public AdaptiveCards.AdaptiveCard BuildTable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string title, List<T> items, string? summary = null)
     {
         AdaptiveCards.AdaptiveCard card = CreateCard();
 

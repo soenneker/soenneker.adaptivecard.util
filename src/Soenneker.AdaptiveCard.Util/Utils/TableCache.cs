@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -8,7 +9,7 @@ namespace Soenneker.AdaptiveCard.Util.Utils;
 /// Per-T table metadata cache: properties + compiled getters.
 /// Eliminates PropertyInfo.GetValue reflection calls in the hot loop.
 /// </summary>
-internal static class TableCache<T>
+internal static class TableCache<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>
 {
     public static readonly TableMeta<T> Meta = Create();
 
