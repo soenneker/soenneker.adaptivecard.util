@@ -48,7 +48,7 @@
     <ItemGroup>
         <PackageReference Include="AdaptiveCards" Version="3.1.0" />
         <PackageReference Include="Soenneker.Extensions.DateTimeOffsets" Version="4.0.168" />
-        <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.759" />
+        <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.760" />
         <PackageReference Include="Soenneker.Utils.TimeZones" Version="4.0.770" />
     </ItemGroup>
     <ItemGroup>
