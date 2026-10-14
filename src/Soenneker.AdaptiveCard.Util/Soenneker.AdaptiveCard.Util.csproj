@@ -47,8 +47,8 @@
 
     <ItemGroup>
         <PackageReference Include="AdaptiveCards" Version="3.1.0" />
-        <PackageReference Include="Soenneker.Extensions.DateTimeOffsets" Version="4.0.185" />
-        <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.780" />
+        <PackageReference Include="Soenneker.Extensions.DateTimeOffsets" Version="4.0.186" />
+        <PackageReference Include="Soenneker.Utils.Environment" Version="4.0.782" />
         <PackageReference Include="Soenneker.Utils.TimeZones" Version="4.0.779" />
     </ItemGroup>
     <ItemGroup>
@@ -56,6 +56,6 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.13" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
-        <PackageReference Include="Soenneker.Extensions.String" Version="4.0.790" />
+        <PackageReference Include="Soenneker.Extensions.String" Version="4.0.791" />
     </ItemGroup>
 </Project>
